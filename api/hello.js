@@ -1,0 +1,5 @@
+// Minimal test function
+module.exports = (req, res) => {
+  res.json({ message: 'Hello from Vercel API!' });
+};
+
