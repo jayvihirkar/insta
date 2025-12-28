@@ -1,0 +1,6 @@
+node_modules/
+ig-session.json
+.env
+.DS_Store
+*.log
+
