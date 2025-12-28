@@ -21,7 +21,19 @@ module.exports = async (req, res) => {
         return res.status(405).json({ success: false, message: 'Method not allowed' });
     }
 
-    const { username } = req.body;
+    // Parse request body for Vercel
+    let body = {};
+    try {
+        if (typeof req.body === 'string') {
+            body = JSON.parse(req.body);
+        } else if (req.body) {
+            body = req.body;
+        }
+    } catch (e) {
+        return res.status(400).json({ success: false, message: 'Invalid JSON in request body' });
+    }
+
+    const { username } = body;
     if (!username) {
         return res.status(400).json({ success: false, message: "Username is required" });
     }
