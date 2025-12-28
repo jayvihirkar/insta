@@ -66,7 +66,35 @@ module.exports = async (req, res) => {
         
         // Login (Vercel serverless functions are stateless, so we login each time)
         // In production, you might want to use Vercel KV or similar for session storage
-        await ig.account.login(igUsername, igPassword);
+        try {
+            await ig.account.login(igUsername, igPassword);
+        } catch (loginError) {
+            console.error('Instagram login error:', loginError);
+            
+            // Provide more helpful error messages
+            if (loginError.message && loginError.message.includes('challenge_required')) {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: "Instagram requires account verification. Please log in to Instagram on a browser first to verify the account, then try again." 
+                });
+            }
+            
+            if (loginError.message && loginError.message.includes('bad_password')) {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: "Invalid Instagram credentials. Please check your IG_USERNAME and IG_PASSWORD in Vercel environment variables." 
+                });
+            }
+            
+            if (loginError.message && loginError.message.includes('400')) {
+                return res.status(401).json({ 
+                    success: false, 
+                    message: "Instagram login failed. Possible reasons: 1) Wrong credentials, 2) 2FA is enabled (disable it or use app-specific password), 3) Account needs verification, 4) Instagram is blocking automated logins. Try logging into Instagram on a browser first." 
+                });
+            }
+            
+            throw loginError; // Re-throw if it's a different error
+        }
         
         // Get user ID by username
         const userId = await ig.user.getIdByUsername(username);
