@@ -6,6 +6,16 @@ const { IgApiClient } = require('instagram-private-api');
 // but we can optimize by checking if session is still valid
 
 module.exports = async (req, res) => {
+    // Handle GET requests for testing
+    if (req.method === 'GET') {
+        return res.status(200).json({ 
+            success: true, 
+            message: 'API endpoint is working. Use POST method with { username: "..." } in body.',
+            method: req.method,
+            url: req.url
+        });
+    }
+    
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
