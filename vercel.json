@@ -13,10 +13,10 @@
     },
     {
       "src": "/",
-      "dest": "/index.html"
+      "dest": "/api/index.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/(.*\\.(html|js|css|png|jpg|jpeg|gif|svg|ico))",
       "dest": "/$1"
     }
   ]
